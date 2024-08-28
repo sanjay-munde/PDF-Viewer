@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Download } from 'lucide-react';
+import { Download, Merge } from 'lucide-react';
 
-const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave }) => {
+const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onMerge }) => {
   return (
     <nav className="bg-white shadow-md p-4 flex items-center justify-between">
       <div className="flex items-center space-x-4">
@@ -30,6 +30,18 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave }) => {
             <div className="text-sm text-gray-600">
               Page {currentPage} of {numPages}
             </div>
+            <input
+              type="file"
+              onChange={onMerge}
+              accept="application/pdf"
+              className="hidden"
+              id="pdf-merge"
+            />
+            <label htmlFor="pdf-merge">
+              <Button variant="outline" asChild>
+                <span><Merge className="mr-2 h-4 w-4" />Merge PDF</span>
+              </Button>
+            </label>
             <Button onClick={onSave} variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Save PDF

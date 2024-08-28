@@ -79,6 +79,37 @@ const Index = () => {
     }
   };
 
+  const onMerge = async (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === "application/pdf") {
+      try {
+        const mergeFileBytes = await file.arrayBuffer();
+        const existingPdfBytes = await fetch(pdfFile).then(res => res.arrayBuffer());
+        
+        const existingPdfDoc = await PDFDocument.load(existingPdfBytes);
+        const mergePdfDoc = await PDFDocument.load(mergeFileBytes);
+        
+        const copiedPages = await existingPdfDoc.copyPages(mergePdfDoc, mergePdfDoc.getPageIndices());
+        copiedPages.forEach((page) => existingPdfDoc.addPage(page));
+        
+        const mergedPdfBytes = await existingPdfDoc.save();
+        const mergedPdfBlob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+        const mergedPdfUrl = URL.createObjectURL(mergedPdfBlob);
+        
+        setPdfFile(mergedPdfUrl);
+        setNumPages(existingPdfDoc.getPageCount());
+        setPageOrder(Array.from({ length: existingPdfDoc.getPageCount() }, (_, i) => i + 1));
+        
+        alert('PDF merged successfully!');
+      } catch (error) {
+        console.error('Error merging PDF:', error);
+        alert('An error occurred while merging the PDF. Please try again.');
+      }
+    } else {
+      alert("Please select a valid PDF file to merge.");
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (mainContentRef.current) {
@@ -116,6 +147,7 @@ const Index = () => {
         numPages={numPages} 
         onFileChange={onFileChange}
         onSave={onSave}
+        onMerge={onMerge}
       />
       <div className="flex flex-1 overflow-hidden">
         {pdfFile && (
