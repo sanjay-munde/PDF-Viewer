@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Download, Merge, Pen, FileUp } from 'lucide-react';
+import { Download, Merge, Pen, FileUp, Edit } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -8,8 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 
-const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs, onMerge, showUploadButton, onTitleChange }) => {
+const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs, onMerge, showUploadButton, onTitleChange, isAnnotationMode, onToggleAnnotationMode }) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(pdfName);
 
@@ -116,6 +117,14 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
                   <DropdownMenuItem onClick={onSaveAs}>Save As</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              <div className="flex items-center space-x-2">
+                <Edit className="h-4 w-4" />
+                <span className="text-sm">Annotation Mode</span>
+                <Switch
+                  checked={isAnnotationMode}
+                  onCheckedChange={onToggleAnnotationMode}
+                />
+              </div>
             </>
           )}
         </div>
