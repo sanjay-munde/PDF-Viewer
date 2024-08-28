@@ -6,6 +6,9 @@ import PDFSidebar from '../components/PDFSidebar';
 import Navbar from '../components/Navbar';
 import { PDFDocument } from 'pdf-lib';
 import { FileIcon } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -73,6 +76,8 @@ const Index = () => {
   const [pdfName, setPdfName] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageOrder, setPageOrder] = useState([]);
+  const [isSaveAsModalOpen, setIsSaveAsModalOpen] = useState(false);
+  const [saveAsFileName, setSaveAsFileName] = useState('');
   const mainContentRef = useRef(null);
 
   const onFileChange = (event) => {
@@ -111,7 +116,7 @@ const Index = () => {
     setPageOrder(newPageOrder);
   };
 
-  const onSave = async () => {
+  const onSave = async (saveAs = false) => {
     if (pdfFile) {
       try {
         const existingPdfBytes = await fetch(pdfFile).then(res => res.arrayBuffer());
@@ -127,14 +132,32 @@ const Index = () => {
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = pdfName || 'modified.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        
+        if (saveAs) {
+          setIsSaveAsModalOpen(true);
+          setSaveAsFileName(pdfName || 'modified.pdf');
+        } else {
+          link.download = pdfName || 'modified.pdf';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
       } catch (error) {
         console.error('Error saving PDF:', error);
         alert('An error occurred while saving the PDF. Please try again.');
       }
+    }
+  };
+
+  const handleSaveAs = () => {
+    if (saveAsFileName) {
+      const link = document.createElement('a');
+      link.href = pdfFile;
+      link.download = saveAsFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setIsSaveAsModalOpen(false);
     }
   };
 
@@ -224,7 +247,8 @@ const Index = () => {
         currentPage={currentPage} 
         numPages={numPages} 
         onFileChange={onFileChange}
-        onSave={onSave}
+        onSave={() => onSave(false)}
+        onSaveAs={() => onSave(true)}
         onMerge={onMerge}
         showUploadButton={!!pdfFile}
       />
@@ -265,6 +289,22 @@ const Index = () => {
         </div>
       </div>
     </div>
+    <Dialog open={isSaveAsModalOpen} onOpenChange={setIsSaveAsModalOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Save As</DialogTitle>
+        </DialogHeader>
+        <Input
+          value={saveAsFileName}
+          onChange={(e) => setSaveAsFileName(e.target.value)}
+          placeholder="Enter file name"
+        />
+        <DialogFooter>
+          <Button onClick={() => setIsSaveAsModalOpen(false)}>Cancel</Button>
+          <Button onClick={handleSaveAs}>Save</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

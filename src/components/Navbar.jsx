@@ -1,8 +1,14 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Download, Merge } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onMerge, showUploadButton }) => {
+const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs, onMerge, showUploadButton }) => {
   return (
     <nav className="bg-white shadow-md p-4">
       <div className="flex justify-between items-start">
@@ -53,10 +59,18 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onMerge,
                   <span><Merge className="mr-2 h-4 w-4" />Merge PDF</span>
                 </Button>
               </label>
-              <Button onClick={onSave} variant="outline">
-                <Download className="mr-2 h-4 w-4" />
-                Save PDF
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    <Download className="mr-2 h-4 w-4" />
+                    Save PDF
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={onSave}>Save</DropdownMenuItem>
+                  <DropdownMenuItem onClick={onSaveAs}>Save As</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </>
           )}
         </div>
