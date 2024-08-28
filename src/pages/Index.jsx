@@ -5,10 +5,11 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 import PDFSidebar from '../components/PDFSidebar';
 import Navbar from '../components/Navbar';
 import { PDFDocument } from 'pdf-lib';
-import { FileIcon } from 'lucide-react';
+import { FileIcon, Edit3 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Toggle } from "@/components/ui/toggle";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -94,9 +95,12 @@ const Index = () => {
   const [isSaveAsModalOpen, setIsSaveAsModalOpen] = useState(false);
   const [saveAsFileName, setSaveAsFileName] = useState('');
   const [annotations, setAnnotations] = useState({});
+  const [isAnnotationMode, setIsAnnotationMode] = useState(false);
   const mainContentRef = useRef(null);
 
   const handleAnnotation = (pageNumber, event) => {
+    if (!isAnnotationMode) return;
+    
     const { offsetX, offsetY, target } = event;
     const x = (offsetX / target.offsetWidth) * 100;
     const y = (offsetY / target.offsetHeight) * 100;
@@ -105,6 +109,10 @@ const Index = () => {
       ...prevAnnotations,
       [pageNumber]: [...(prevAnnotations[pageNumber] || []), { x, y }]
     }));
+  };
+
+  const toggleAnnotationMode = () => {
+    setIsAnnotationMode(!isAnnotationMode);
   };
 
   const onFileChange = (event) => {
@@ -284,7 +292,18 @@ const Index = () => {
           onMerge={onMerge}
           showUploadButton={!!pdfFile}
           onTitleChange={handleTitleChange}
-        />
+        >
+          {pdfFile && (
+            <Toggle
+              pressed={isAnnotationMode}
+              onPressedChange={toggleAnnotationMode}
+              aria-label="Toggle annotation mode"
+            >
+              <Edit3 className="h-4 w-4 mr-2" />
+              Annotate
+            </Toggle>
+          )}
+        </Navbar>
         <div className="flex flex-1 overflow-hidden">
           {pdfFile && (
             <PDFSidebar
