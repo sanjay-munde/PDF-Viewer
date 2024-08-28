@@ -177,7 +177,8 @@ const Index = () => {
           const elementTop = element.offsetTop;
           const elementBottom = elementTop + element.clientHeight;
           if (scrollTop >= elementTop - clientHeight / 2 && scrollTop < elementBottom - clientHeight / 2) {
-            setCurrentPage(pageOrder[i]);
+            const visiblePageNumber = pageOrder[i];
+            setCurrentPage(visiblePageNumber);
             break;
           }
         }
@@ -194,6 +195,21 @@ const Index = () => {
         contentElement.removeEventListener('scroll', handleScroll);
       }
     };
+  }, [pageOrder]);
+
+  // Update currentPage when pageOrder changes
+  useEffect(() => {
+    if (mainContentRef.current) {
+      const { scrollTop } = mainContentRef.current;
+      const pageElements = document.querySelectorAll('[id^="page_"]');
+      for (let i = 0; i < pageElements.length; i++) {
+        const element = pageElements[i];
+        if (scrollTop < element.offsetTop + element.clientHeight) {
+          setCurrentPage(pageOrder[i]);
+          break;
+        }
+      }
+    }
   }, [pageOrder]);
 
   return (
