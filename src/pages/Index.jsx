@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { PDFDocument } from 'pdf-lib';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import PDFSidebar from '../components/PDFSidebar';
@@ -18,7 +19,7 @@ const Index = () => {
   const onFileChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type === "application/pdf") {
-      setPdfFile(URL.createObjectURL(file));
+      setPdfFile(file);
       setPdfName(file.name);
       setCurrentPage(1);
     } else {
@@ -49,6 +50,31 @@ const Index = () => {
     newPageOrder.splice(result.destination.index, 0, reorderedItem);
 
     setPageOrder(newPageOrder);
+  };
+
+  const onDownload = async () => {
+    if (!pdfFile) return;
+
+    try {
+      const existingPdfBytes = await pdfFile.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(existingPdfBytes);
+      const newPdfDoc = await PDFDocument.create();
+
+      for (const pageNum of pageOrder) {
+        const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNum - 1]);
+        newPdfDoc.addPage(copiedPage);
+      }
+
+      const pdfBytes = await newPdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `reordered_${pdfName}`;
+      link.click();
+    } catch (error) {
+      console.error('Error reordering PDF:', error);
+      alert('An error occurred while reordering the PDF. Please try again.');
+    }
   };
 
   useEffect(() => {
@@ -82,11 +108,17 @@ const Index = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <Navbar pdfName={pdfName} currentPage={currentPage} numPages={numPages} onFileChange={onFileChange} />
+      <Navbar 
+        pdfName={pdfName} 
+        currentPage={currentPage} 
+        numPages={numPages} 
+        onFileChange={onFileChange}
+        onDownload={onDownload}
+      />
       <div className="flex flex-1 overflow-hidden">
         {pdfFile && (
           <PDFSidebar
-            file={pdfFile}
+            file={URL.createObjectURL(pdfFile)}
             pages={pageOrder}
             onPageClick={scrollToPage}
             onDragEnd={onDragEnd}
@@ -97,7 +129,7 @@ const Index = () => {
             <div className="border rounded-lg overflow-hidden bg-white shadow-lg h-full">
               <div ref={mainContentRef} className="overflow-y-auto h-full">
                 <Document
-                  file={pdfFile}
+                  file={URL.createObjectURL(pdfFile)}
                   onLoadSuccess={onDocumentLoadSuccess}
                   className="flex flex-col items-center"
                 >
