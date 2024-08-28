@@ -4,6 +4,7 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import PDFSidebar from '../components/PDFSidebar';
 import Navbar from '../components/Navbar';
+import { PDFDocument } from 'pdf-lib';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -51,14 +52,30 @@ const Index = () => {
     setPageOrder(newPageOrder);
   };
 
-  const onSave = () => {
+  const onSave = async () => {
     if (pdfFile) {
-      const link = document.createElement('a');
-      link.href = pdfFile;
-      link.download = pdfName || 'downloaded.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      try {
+        const existingPdfBytes = await fetch(pdfFile).then(res => res.arrayBuffer());
+        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+        const newPdfDoc = await PDFDocument.create();
+
+        for (const pageNumber of pageOrder) {
+          const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNumber - 1]);
+          newPdfDoc.addPage(copiedPage);
+        }
+
+        const pdfBytes = await newPdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = pdfName || 'modified.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error('Error saving PDF:', error);
+        alert('An error occurred while saving the PDF. Please try again.');
+      }
     }
   };
 
