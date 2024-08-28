@@ -9,7 +9,6 @@ import { FileIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -150,8 +149,6 @@ const Index = () => {
     }
   };
 
-  const { toast } = useToast();
-
   const handleSaveAs = () => {
     if (saveAsFileName.trim()) {
       const link = document.createElement('a');
@@ -161,17 +158,6 @@ const Index = () => {
       link.click();
       document.body.removeChild(link);
       setIsSaveAsModalOpen(false);
-      toast({
-        title: "Success",
-        description: "File saved successfully.",
-        variant: "default",
-      });
-    } else {
-      toast({
-        title: "Error",
-        description: "The file name cannot be empty.",
-        variant: "destructive",
-      });
     }
   };
 
