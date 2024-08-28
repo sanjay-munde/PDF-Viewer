@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Download, Merge, Pen } from 'lucide-react';
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +13,7 @@ import {
 const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs, onMerge, showUploadButton, onTitleChange }) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(pdfName);
+  const { toast } = useToast();
 
   const handleTitleClick = () => {
     setIsEditingTitle(true);
@@ -27,6 +29,11 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
       setIsEditingTitle(false);
       onTitleChange(editedTitle.trim());
     } else {
+      toast({
+        title: "Error",
+        description: "The name cannot be empty.",
+        variant: "destructive",
+      });
       setEditedTitle(pdfName);
     }
   };
