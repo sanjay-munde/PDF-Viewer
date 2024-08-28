@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Download, Merge } from 'lucide-react';
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +9,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs, onMerge, showUploadButton }) => {
+const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs, onMerge, showUploadButton, onTitleChange }) => {
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(pdfName);
+
+  const handleTitleClick = () => {
+    setIsEditingTitle(true);
+    setEditedTitle(pdfName);
+  };
+
+  const handleTitleChange = (e) => {
+    setEditedTitle(e.target.value);
+  };
+
+  const handleTitleBlur = () => {
+    setIsEditingTitle(false);
+    onTitleChange(editedTitle);
+  };
+
+  const handleTitleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleTitleBlur();
+    }
+  };
+
   return (
     <nav className="bg-white shadow-md p-4">
       <div className="flex justify-between items-start">
@@ -32,9 +56,23 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
             )}
             <div className="flex flex-col">
               {pdfName && (
-                <span className="text-sm font-medium text-gray-700">
-                  {pdfName}
-                </span>
+                isEditingTitle ? (
+                  <Input
+                    value={editedTitle}
+                    onChange={handleTitleChange}
+                    onBlur={handleTitleBlur}
+                    onKeyDown={handleTitleKeyDown}
+                    className="text-sm font-medium text-gray-700 w-48"
+                    autoFocus
+                  />
+                ) : (
+                  <span
+                    className="text-sm font-medium text-gray-700 cursor-pointer"
+                    onClick={handleTitleClick}
+                  >
+                    {pdfName}
+                  </span>
+                )
               )}
               {pdfName && numPages > 0 && (
                 <div className="text-xs text-gray-600">

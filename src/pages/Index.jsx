@@ -190,6 +190,10 @@ const Index = () => {
     }
   };
 
+  const handleTitleChange = (newTitle) => {
+    setPdfName(newTitle);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (mainContentRef.current) {
@@ -252,6 +256,7 @@ const Index = () => {
           onSaveAs={() => onSave(true)}
           onMerge={onMerge}
           showUploadButton={!!pdfFile}
+          onTitleChange={handleTitleChange}
         />
         <div className="flex flex-1 overflow-hidden">
           {pdfFile && (
@@ -299,6 +304,11 @@ const Index = () => {
             value={saveAsFileName}
             onChange={(e) => setSaveAsFileName(e.target.value)}
             placeholder="Enter file name"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSaveAs();
+              }
+            }}
           />
           <DialogFooter>
             <Button onClick={() => setIsSaveAsModalOpen(false)}>Cancel</Button>
