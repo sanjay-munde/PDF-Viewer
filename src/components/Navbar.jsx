@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Download, Merge, Pen, FileUp } from 'lucide-react';
+import { Download, Merge, Pen, FileUp, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs, onMerge, showUploadButton, onTitleChange }) => {
+const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs, onMerge, showUploadButton, onTitleChange, isSidebarVisible, onToggleSidebar }) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(pdfName);
 
@@ -40,9 +40,16 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
   return (
     <nav className="bg-white shadow-md p-4">
       <div className="flex justify-between items-start">
-        <div className="flex flex-col">
-          <div className="flex items-center space-x-4">
-            <div className="flex flex-col">
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggleSidebar}
+            className="mr-2"
+          >
+            {isSidebarVisible ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+          </Button>
+          <div className="flex flex-col">
               {pdfName && (
                 isEditingTitle ? (
                   <Input

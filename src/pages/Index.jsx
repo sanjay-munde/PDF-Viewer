@@ -79,7 +79,12 @@ const Index = () => {
   const [pageOrder, setPageOrder] = useState([]);
   const [isSaveAsModalOpen, setIsSaveAsModalOpen] = useState(false);
   const [saveAsFileName, setSaveAsFileName] = useState('');
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const mainContentRef = useRef(null);
+
+  const toggleSidebar = () => {
+    setIsSidebarVisible(!isSidebarVisible);
+  };
 
   const onFileChange = (event) => {
     const file = event.target.files[0];
@@ -258,9 +263,11 @@ const Index = () => {
           onMerge={onMerge}
           showUploadButton={!!pdfFile}
           onTitleChange={handleTitleChange}
+          isSidebarVisible={isSidebarVisible}
+          onToggleSidebar={toggleSidebar}
         />
         <div className="flex flex-1 overflow-hidden">
-          {pdfFile && (
+          {pdfFile && isSidebarVisible && (
             <PDFSidebar
               file={pdfFile}
               pages={pageOrder}
