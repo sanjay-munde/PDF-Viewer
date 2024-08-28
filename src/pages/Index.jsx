@@ -161,6 +161,11 @@ const Index = () => {
       link.click();
       document.body.removeChild(link);
       setIsSaveAsModalOpen(false);
+      toast({
+        title: "Success",
+        description: "File saved successfully.",
+        variant: "default",
+      });
     } else {
       toast({
         title: "Error",

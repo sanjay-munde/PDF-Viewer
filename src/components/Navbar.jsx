@@ -35,6 +35,7 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
         variant: "destructive",
       });
       setEditedTitle(pdfName);
+      setIsEditingTitle(false);
     }
   };
 
