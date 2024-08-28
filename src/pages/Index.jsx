@@ -205,6 +205,7 @@ const Index = () => {
         onFileChange={onFileChange}
         onSave={onSave}
         onMerge={onMerge}
+        showUploadButton={!!pdfFile}
       />
       <div className="flex flex-1 overflow-hidden">
         {pdfFile && (
