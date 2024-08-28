@@ -66,7 +66,7 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
                     onChange={handleTitleChange}
                     onBlur={handleTitleBlur}
                     onKeyDown={handleTitleKeyDown}
-                    className="text-sm font-medium text-gray-700 w-48"
+                    className="text-sm font-medium text-gray-700 w-48 h-6 px-1 py-0"
                     autoFocus
                   />
                 ) : (
