@@ -241,70 +241,72 @@ const Index = () => {
   }, [pageOrder]);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <Navbar 
-        pdfName={pdfName} 
-        currentPage={currentPage} 
-        numPages={numPages} 
-        onFileChange={onFileChange}
-        onSave={() => onSave(false)}
-        onSaveAs={() => onSave(true)}
-        onMerge={onMerge}
-        showUploadButton={!!pdfFile}
-      />
-      <div className="flex flex-1 overflow-hidden">
-        {pdfFile && (
-          <PDFSidebar
-            file={pdfFile}
-            pages={pageOrder}
-            onPageClick={scrollToPage}
-            onDragEnd={onDragEnd}
-          />
-        )}
-        <div className="flex-1 p-4 overflow-hidden relative">
-          {pdfFile ? (
-            <div className="border rounded-lg overflow-hidden bg-white shadow-lg h-full">
-              <div ref={mainContentRef} className="overflow-y-auto h-full">
-                <Document
-                  file={pdfFile}
-                  onLoadSuccess={onDocumentLoadSuccess}
-                  className="flex flex-col items-center"
-                >
-                  {pageOrder.map((pageNumber, index) => (
-                    <div id={`page_${pageNumber}`} key={`page_${pageNumber}`} className="mb-8">
-                      <Page
-                        pageNumber={pageNumber}
-                        width={Math.min(800, window.innerWidth * 0.6)}
-                        renderTextLayer={true}
-                        renderAnnotationLayer={true}
-                      />
-                    </div>
-                  ))}
-                </Document>
-              </div>
-            </div>
-          ) : (
-            <DragDropArea onFileChange={onFileChange} />
+    <>
+      <div className="flex flex-col h-screen bg-gray-100">
+        <Navbar 
+          pdfName={pdfName} 
+          currentPage={currentPage} 
+          numPages={numPages} 
+          onFileChange={onFileChange}
+          onSave={() => onSave(false)}
+          onSaveAs={() => onSave(true)}
+          onMerge={onMerge}
+          showUploadButton={!!pdfFile}
+        />
+        <div className="flex flex-1 overflow-hidden">
+          {pdfFile && (
+            <PDFSidebar
+              file={pdfFile}
+              pages={pageOrder}
+              onPageClick={scrollToPage}
+              onDragEnd={onDragEnd}
+            />
           )}
+          <div className="flex-1 p-4 overflow-hidden relative">
+            {pdfFile ? (
+              <div className="border rounded-lg overflow-hidden bg-white shadow-lg h-full">
+                <div ref={mainContentRef} className="overflow-y-auto h-full">
+                  <Document
+                    file={pdfFile}
+                    onLoadSuccess={onDocumentLoadSuccess}
+                    className="flex flex-col items-center"
+                  >
+                    {pageOrder.map((pageNumber, index) => (
+                      <div id={`page_${pageNumber}`} key={`page_${pageNumber}`} className="mb-8">
+                        <Page
+                          pageNumber={pageNumber}
+                          width={Math.min(800, window.innerWidth * 0.6)}
+                          renderTextLayer={true}
+                          renderAnnotationLayer={true}
+                        />
+                      </div>
+                    ))}
+                  </Document>
+                </div>
+              </div>
+            ) : (
+              <DragDropArea onFileChange={onFileChange} />
+            )}
+          </div>
         </div>
       </div>
-    </div>
-    <Dialog open={isSaveAsModalOpen} onOpenChange={setIsSaveAsModalOpen}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Save As</DialogTitle>
-        </DialogHeader>
-        <Input
-          value={saveAsFileName}
-          onChange={(e) => setSaveAsFileName(e.target.value)}
-          placeholder="Enter file name"
-        />
-        <DialogFooter>
-          <Button onClick={() => setIsSaveAsModalOpen(false)}>Cancel</Button>
-          <Button onClick={handleSaveAs}>Save</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <Dialog open={isSaveAsModalOpen} onOpenChange={setIsSaveAsModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save As</DialogTitle>
+          </DialogHeader>
+          <Input
+            value={saveAsFileName}
+            onChange={(e) => setSaveAsFileName(e.target.value)}
+            placeholder="Enter file name"
+          />
+          <DialogFooter>
+            <Button onClick={() => setIsSaveAsModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleSaveAs}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
