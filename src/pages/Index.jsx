@@ -9,6 +9,7 @@ import { FileIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import HelpButton from '../components/HelpButton';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -259,6 +260,7 @@ const Index = () => {
           onTitleChange={handleTitleChange}
         />
         <div className="flex flex-1 overflow-hidden">
+          <HelpButton />
           {pdfFile && (
             <PDFSidebar
               file={pdfFile}
