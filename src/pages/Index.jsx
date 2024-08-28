@@ -4,7 +4,6 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import PDFSidebar from '../components/PDFSidebar';
 import Navbar from '../components/Navbar';
-import { PDFDocument } from 'pdf-lib';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -19,7 +18,7 @@ const Index = () => {
   const onFileChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type === "application/pdf") {
-      setPdfFile(file);
+      setPdfFile(URL.createObjectURL(file));
       setPdfName(file.name);
       setCurrentPage(1);
     } else {
@@ -50,31 +49,6 @@ const Index = () => {
     newPageOrder.splice(result.destination.index, 0, reorderedItem);
 
     setPageOrder(newPageOrder);
-  };
-
-  const onSave = async () => {
-    if (!pdfFile) return;
-
-    try {
-      const existingPdfBytes = await pdfFile.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(existingPdfBytes);
-      const newPdfDoc = await PDFDocument.create();
-
-      for (const pageNum of pageOrder) {
-        const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNum - 1]);
-        newPdfDoc.addPage(copiedPage);
-      }
-
-      const pdfBytes = await newPdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `reordered_${pdfName}`;
-      link.click();
-    } catch (error) {
-      console.error('Error saving PDF:', error);
-      alert('An error occurred while saving the PDF. Please try again.');
-    }
   };
 
   useEffect(() => {
@@ -108,17 +82,11 @@ const Index = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <Navbar 
-        pdfName={pdfName} 
-        currentPage={currentPage} 
-        numPages={numPages} 
-        onFileChange={onFileChange}
-        onSave={onSave}
-      />
+      <Navbar pdfName={pdfName} currentPage={currentPage} numPages={numPages} onFileChange={onFileChange} />
       <div className="flex flex-1 overflow-hidden">
         {pdfFile && (
           <PDFSidebar
-            file={URL.createObjectURL(pdfFile)}
+            file={pdfFile}
             pages={pageOrder}
             onPageClick={scrollToPage}
             onDragEnd={onDragEnd}
@@ -129,7 +97,7 @@ const Index = () => {
             <div className="border rounded-lg overflow-hidden bg-white shadow-lg h-full">
               <div ref={mainContentRef} className="overflow-y-auto h-full">
                 <Document
-                  file={URL.createObjectURL(pdfFile)}
+                  file={pdfFile}
                   onLoadSuccess={onDocumentLoadSuccess}
                   className="flex flex-col items-center"
                 >
