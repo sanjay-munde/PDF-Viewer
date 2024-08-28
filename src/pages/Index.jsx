@@ -9,7 +9,6 @@ import { FileIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import AnnotationLayer from '../components/AnnotationLayer';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -79,8 +78,6 @@ const Index = () => {
   const [pageOrder, setPageOrder] = useState([]);
   const [isSaveAsModalOpen, setIsSaveAsModalOpen] = useState(false);
   const [saveAsFileName, setSaveAsFileName] = useState('');
-  const [isAnnotationMode, setIsAnnotationMode] = useState(false);
-  const [annotations, setAnnotations] = useState({});
   const mainContentRef = useRef(null);
 
   const onFileChange = (event) => {
@@ -129,20 +126,6 @@ const Index = () => {
         for (const pageNumber of pageOrder) {
           const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNumber - 1]);
           newPdfDoc.addPage(copiedPage);
-
-          // Add annotations to the page
-          if (annotations[pageNumber]) {
-            const { width, height } = copiedPage.getSize();
-            annotations[pageNumber].forEach(annotation => {
-              copiedPage.drawSvgPath(annotation.path, {
-                x: annotation.x * width,
-                y: height - annotation.y * height,
-                color: annotation.color,
-                opacity: annotation.opacity,
-                borderWidth: annotation.borderWidth,
-              });
-            });
-          }
         }
 
         const pdfBytes = await newPdfDoc.save();
@@ -261,13 +244,6 @@ const Index = () => {
     updateCurrentPage();
   }, [pageOrder]);
 
-  const handleAnnotationChange = (pageNumber, newAnnotations) => {
-    setAnnotations(prevAnnotations => ({
-      ...prevAnnotations,
-      [pageNumber]: newAnnotations
-    }));
-  };
-
   return (
     <>
       <div className="flex flex-col h-screen bg-gray-100">
@@ -281,8 +257,6 @@ const Index = () => {
           onMerge={onMerge}
           showUploadButton={!!pdfFile}
           onTitleChange={handleTitleChange}
-          isAnnotationMode={isAnnotationMode}
-          onToggleAnnotationMode={() => setIsAnnotationMode(!isAnnotationMode)}
         />
         <div className="flex flex-1 overflow-hidden">
           {pdfFile && (
@@ -303,22 +277,13 @@ const Index = () => {
                     className="flex flex-col items-center"
                   >
                     {pageOrder.map((pageNumber, index) => (
-                      <div id={`page_${pageNumber}`} key={`page_${pageNumber}`} className="mb-8 relative">
+                      <div id={`page_${pageNumber}`} key={`page_${pageNumber}`} className="mb-8">
                         <Page
                           pageNumber={pageNumber}
                           width={Math.min(800, window.innerWidth * 0.6)}
-                          renderTextLayer={!isAnnotationMode}
-                          renderAnnotationLayer={!isAnnotationMode}
+                          renderTextLayer={true}
+                          renderAnnotationLayer={true}
                         />
-                        {isAnnotationMode && (
-                          <AnnotationLayer
-                            pageNumber={pageNumber}
-                            width={Math.min(800, window.innerWidth * 0.6)}
-                            height={Math.min(800 * 1.414, window.innerWidth * 0.6 * 1.414)}
-                            annotations={annotations[pageNumber] || []}
-                            onChange={(newAnnotations) => handleAnnotationChange(pageNumber, newAnnotations)}
-                          />
-                        )}
                       </div>
                     ))}
                   </Document>
