@@ -39,7 +39,7 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
 
   return (
     <nav className="bg-white shadow-md p-4">
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <Button
             variant="ghost"
@@ -50,34 +50,33 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
             {isSidebarVisible ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
           </Button>
           <div className="flex flex-col">
-              {pdfName && (
-                isEditingTitle ? (
-                  <Input
-                    value={editedTitle}
-                    onChange={handleTitleChange}
-                    onBlur={handleTitleBlur}
-                    onKeyDown={handleTitleKeyDown}
-                    className="text-sm font-medium text-gray-700 w-48 h-6 px-1 py-0"
-                    autoFocus
-                  />
-                ) : (
-                  <div className="flex items-center group">
-                    <span
-                      className="text-sm font-medium text-gray-700 cursor-pointer"
-                      onClick={handleTitleClick}
-                    >
-                      {pdfName}
-                    </span>
-                    <Pen className="w-4 h-4 ml-2 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                )
-              )}
-              {pdfName && numPages > 0 && (
-                <div className="text-xs text-gray-600">
-                  Page {currentPage} of {numPages}
+            {pdfName && (
+              isEditingTitle ? (
+                <Input
+                  value={editedTitle}
+                  onChange={handleTitleChange}
+                  onBlur={handleTitleBlur}
+                  onKeyDown={handleTitleKeyDown}
+                  className="text-sm font-medium text-gray-700 w-48 h-6 px-1 py-0"
+                  autoFocus
+                />
+              ) : (
+                <div className="flex items-center group">
+                  <span
+                    className="text-sm font-medium text-gray-700 cursor-pointer"
+                    onClick={handleTitleClick}
+                  >
+                    {pdfName}
+                  </span>
+                  <Pen className="w-4 h-4 ml-2 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-              )}
-            </div>
+              )
+            )}
+            {pdfName && numPages > 0 && (
+              <div className="text-xs text-gray-600">
+                Page {currentPage} of {numPages}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex items-center space-x-4">
