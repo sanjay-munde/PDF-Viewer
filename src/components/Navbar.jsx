@@ -74,22 +74,18 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          {showUploadButton && (
-            <>
-              <input
-                type="file"
-                onChange={onFileChange}
-                accept="application/pdf"
-                className="hidden"
-                id="pdf-upload"
-              />
-              <label htmlFor="pdf-upload">
-                <Button variant="outline" asChild>
-                  <span><FileUp className="mr-2 h-4 w-4" />{pdfName ? 'Change PDF' : 'Upload PDF'}</span>
-                </Button>
-              </label>
-            </>
-          )}
+          <input
+            type="file"
+            onChange={onFileChange}
+            accept="application/pdf"
+            className="hidden"
+            id="pdf-upload"
+          />
+          <label htmlFor="pdf-upload">
+            <Button variant="outline" asChild>
+              <span><FileUp className="mr-2 h-4 w-4" />{pdfName ? 'Change PDF' : 'Upload PDF'}</span>
+            </Button>
+          </label>
           {pdfName && numPages > 0 && (
             <>
               <input

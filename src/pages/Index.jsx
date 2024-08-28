@@ -260,7 +260,6 @@ const Index = () => {
           onTitleChange={handleTitleChange}
         />
         <div className="flex flex-1 overflow-hidden">
-          <HelpButton />
           {pdfFile && (
             <PDFSidebar
               file={pdfFile}
@@ -318,6 +317,7 @@ const Index = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <HelpButton />
     </>
   );
 };

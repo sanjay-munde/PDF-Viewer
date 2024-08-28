@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { HelpCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +10,6 @@ import {
 } from "@/components/ui/dialog";
 
 const HelpButton = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
   const features = [
     "Upload and view PDF files",
     "Navigate through pages",
@@ -19,15 +17,16 @@ const HelpButton = () => {
     "Merge PDFs",
     "Save and download modified PDFs",
     "Rename PDFs",
+    "Change existing PDF",
   ];
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog>
       <DialogTrigger asChild>
         <Button
           variant="outline"
           size="icon"
-          className="fixed bottom-4 right-4 rounded-full"
+          className="fixed bottom-4 right-4 rounded-full z-50"
         >
           <HelpCircle className="h-4 w-4" />
         </Button>
