@@ -51,6 +51,17 @@ const Index = () => {
     setPageOrder(newPageOrder);
   };
 
+  const onSave = () => {
+    if (pdfFile) {
+      const link = document.createElement('a');
+      link.href = pdfFile;
+      link.download = pdfName || 'downloaded.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (mainContentRef.current) {
@@ -82,7 +93,13 @@ const Index = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <Navbar pdfName={pdfName} currentPage={currentPage} numPages={numPages} onFileChange={onFileChange} />
+      <Navbar 
+        pdfName={pdfName} 
+        currentPage={currentPage} 
+        numPages={numPages} 
+        onFileChange={onFileChange}
+        onSave={onSave}
+      />
       <div className="flex flex-1 overflow-hidden">
         {pdfFile && (
           <PDFSidebar
