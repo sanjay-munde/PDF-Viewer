@@ -8,6 +8,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 const Index = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const onFileChange = (event) => {
     const file = event.target.files[0];
@@ -20,6 +21,7 @@ const Index = () => {
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
+    setCurrentPage(1);
   };
 
   return (
@@ -39,21 +41,40 @@ const Index = () => {
         />
       </div>
       {pdfFile && (
-        <div className="border rounded-lg overflow-hidden bg-white shadow-lg">
-          <Document
-            file={pdfFile}
-            onLoadSuccess={onDocumentLoadSuccess}
-            className="flex flex-col items-center"
-          >
-            {Array.from(new Array(numPages), (el, index) => (
+        <div className="flex border rounded-lg overflow-hidden bg-white shadow-lg">
+          <div className="w-1/4 border-r overflow-y-auto h-[calc(100vh-200px)]">
+            <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
+              {Array.from(new Array(numPages), (el, index) => (
+                <div
+                  key={`thumb_${index + 1}`}
+                  className={`cursor-pointer p-2 ${currentPage === index + 1 ? 'bg-blue-100' : ''}`}
+                  onClick={() => setCurrentPage(index + 1)}
+                >
+                  <Page
+                    pageNumber={index + 1}
+                    width={150}
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                  />
+                </div>
+              ))}
+            </Document>
+          </div>
+          <div className="w-3/4 overflow-y-auto h-[calc(100vh-200px)]">
+            <Document
+              file={pdfFile}
+              onLoadSuccess={onDocumentLoadSuccess}
+              className="flex flex-col items-center"
+            >
               <Page
-                key={`page_${index + 1}`}
-                pageNumber={index + 1}
-                className="mb-4"
-                width={Math.min(600, window.innerWidth - 64)}
+                pageNumber={currentPage}
+                width={Math.min(800, window.innerWidth * 0.6)}
               />
-            ))}
-          </Document>
+            </Document>
+            <p className="text-center mt-4">
+              Page {currentPage} of {numPages}
+            </p>
+          </div>
         </div>
       )}
     </div>
