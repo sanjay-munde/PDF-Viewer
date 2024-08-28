@@ -14,6 +14,7 @@ const HelpButton = () => {
     "Upload and view PDF files",
     "Navigate through pages",
     "Reorder pages via drag and drop",
+    "Delete pages",
     "Merge PDFs",
     "Save and download modified PDFs",
     "Rename PDFs",
