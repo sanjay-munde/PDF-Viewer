@@ -26,7 +26,7 @@ const PDFSidebar = ({ file, pages, onPageClick, onDragEnd }) => {
                           renderTextLayer={false}
                           renderAnnotationLayer={false}
                         />
-                        <p className="text-center text-sm mt-1">Page {page}</p>
+                        <p className="text-center text-sm mt-1">Page {index + 1} (Original: {page})</p>
                       </div>
                     )}
                   </Draggable>
