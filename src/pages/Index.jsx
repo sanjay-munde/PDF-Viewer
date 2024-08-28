@@ -19,6 +19,7 @@ const Index = () => {
     if (file && file.type === "application/pdf") {
       setPdfFile(URL.createObjectURL(file));
       setPdfName(file.name);
+      setCurrentPage(1); // Reset to first page when new file is uploaded
     } else {
       alert("Please select a valid PDF file.");
     }
