@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 const PDFSidebar = ({ file, pages, onPageClick, onDragEnd, onDeletePage }) => {
   return (
-    <div className="w-64 h-screen overflow-y-auto bg-gray-100 p-4 border-r">
+    <div className="w-64 h-screen overflow-y-auto bg-gradient-to-b from-purple-500 to-pink-500 p-4 border-r border-white/20">
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="pdf-pages">
           {(provided) => (
@@ -19,7 +19,7 @@ const PDFSidebar = ({ file, pages, onPageClick, onDragEnd, onDeletePage }) => {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className="mb-4 cursor-pointer"
+                        className="mb-4 cursor-pointer bg-white/10 p-2 rounded-lg hover:bg-white/20 transition-colors"
                         onClick={() => onPageClick(page)}
                       >
                         <div className="relative">
@@ -41,7 +41,7 @@ const PDFSidebar = ({ file, pages, onPageClick, onDragEnd, onDeletePage }) => {
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
-                        <p className="text-center text-sm mt-1">
+                        <p className="text-center text-sm mt-1 text-white">
                           Page {index + 1}
                         </p>
                       </div>

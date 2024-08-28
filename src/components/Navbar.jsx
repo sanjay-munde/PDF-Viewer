@@ -39,15 +39,15 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
   };
 
   return (
-    <nav className="bg-white shadow-md p-4">
-      <div className="flex justify-between items-center">
+    <nav className="bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg p-4">
+      <div className="flex justify-between items-center text-white">
         <div className="flex items-center space-x-4">
           {showSidebarToggle && (
             <Button
               variant="ghost"
               size="icon"
               onClick={onToggleSidebar}
-              className="mr-2"
+              className="mr-2 text-white hover:bg-white/20"
             >
               {isSidebarVisible ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
             </Button>
@@ -91,7 +91,7 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
             id="pdf-upload"
           />
           <label htmlFor="pdf-upload">
-            <Button variant="outline" asChild>
+            <Button variant="secondary" className="bg-white/20 text-white hover:bg-white/30" asChild>
               <span><FileUp className="mr-2 h-4 w-4" />{pdfName ? 'Change PDF' : 'Upload PDF'}</span>
             </Button>
           </label>
