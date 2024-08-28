@@ -122,6 +122,26 @@ const Index = () => {
     setPageOrder(newPageOrder);
   };
 
+  const onDeletePage = async (index) => {
+    try {
+      const existingPdfBytes = await fetch(pdfFile).then(res => res.arrayBuffer());
+      const pdfDoc = await PDFDocument.load(existingPdfBytes);
+      pdfDoc.removePage(index);
+
+      const newPageOrder = pageOrder.filter((_, i) => i !== index);
+      setPageOrder(newPageOrder);
+      setNumPages(pdfDoc.getPageCount());
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const newPdfUrl = URL.createObjectURL(blob);
+      setPdfFile(newPdfUrl);
+    } catch (error) {
+      console.error('Error deleting page:', error);
+      alert('An error occurred while deleting the page. Please try again.');
+    }
+  };
+
   const onSave = async (saveAs = false) => {
     if (pdfFile) {
       try {
@@ -273,6 +293,7 @@ const Index = () => {
               pages={pageOrder}
               onPageClick={scrollToPage}
               onDragEnd={onDragEnd}
+              onDeletePage={onDeletePage}
             />
           )}
           <div className="flex-1 p-4 overflow-hidden relative">
