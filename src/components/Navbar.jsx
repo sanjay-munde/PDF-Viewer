@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Download, Merge } from 'lucide-react';
+import { Download, Merge, Pen } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -23,8 +23,12 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
   };
 
   const handleTitleBlur = () => {
-    setIsEditingTitle(false);
-    onTitleChange(editedTitle);
+    if (editedTitle.trim() !== '') {
+      setIsEditingTitle(false);
+      onTitleChange(editedTitle.trim());
+    } else {
+      setEditedTitle(pdfName);
+    }
   };
 
   const handleTitleKeyDown = (e) => {
@@ -66,12 +70,15 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
                     autoFocus
                   />
                 ) : (
-                  <span
-                    className="text-sm font-medium text-gray-700 cursor-pointer"
-                    onClick={handleTitleClick}
-                  >
-                    {pdfName}
-                  </span>
+                  <div className="flex items-center group">
+                    <span
+                      className="text-sm font-medium text-gray-700 cursor-pointer"
+                      onClick={handleTitleClick}
+                    >
+                      {pdfName}
+                    </span>
+                    <Pen className="w-4 h-4 ml-2 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
                 )
               )}
               {pdfName && numPages > 0 && (

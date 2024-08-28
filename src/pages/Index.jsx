@@ -150,10 +150,10 @@ const Index = () => {
   };
 
   const handleSaveAs = () => {
-    if (saveAsFileName) {
+    if (saveAsFileName.trim()) {
       const link = document.createElement('a');
       link.href = pdfFile;
-      link.download = saveAsFileName;
+      link.download = saveAsFileName.trim();
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -305,7 +305,7 @@ const Index = () => {
             onChange={(e) => setSaveAsFileName(e.target.value)}
             placeholder="Enter file name"
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === 'Enter' && saveAsFileName.trim()) {
                 handleSaveAs();
               }
             }}
