@@ -5,8 +5,67 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 import PDFSidebar from '../components/PDFSidebar';
 import Navbar from '../components/Navbar';
 import { PDFDocument } from 'pdf-lib';
+import { FileIcon } from 'lucide-react';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+
+const DragDropArea = ({ onFileChange }) => {
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      onFileChange({ target: { files: [files[0]] } });
+    }
+  };
+
+  return (
+    <div
+      className={`flex flex-col items-center justify-center h-full border-4 border-dashed rounded-lg p-8 transition-colors ${
+        isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+      }`}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      <FileIcon className="w-16 h-16 text-gray-400 mb-4" />
+      <p className="text-xl font-semibold text-gray-700 mb-2">Drag & Drop your PDF here</p>
+      <p className="text-sm text-gray-500 mb-4">or</p>
+      <label htmlFor="pdf-upload" className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
+        Choose PDF
+      </label>
+      <input
+        id="pdf-upload"
+        type="file"
+        onChange={onFileChange}
+        accept="application/pdf"
+        className="hidden"
+      />
+    </div>
+  );
+};
 
 const Index = () => {
   const [pdfFile, setPdfFile] = useState(null);
@@ -157,7 +216,7 @@ const Index = () => {
           />
         )}
         <div className="flex-1 p-4 overflow-hidden relative">
-          {pdfFile && (
+          {pdfFile ? (
             <div className="border rounded-lg overflow-hidden bg-white shadow-lg h-full">
               <div ref={mainContentRef} className="overflow-y-auto h-full">
                 <Document
@@ -178,6 +237,8 @@ const Index = () => {
                 </Document>
               </div>
             </div>
+          ) : (
+            <DragDropArea onFileChange={onFileChange} />
           )}
         </div>
       </div>
