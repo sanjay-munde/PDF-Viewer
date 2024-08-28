@@ -23,7 +23,7 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange }) => {
           </span>
         )}
       </div>
-      {numPages > 0 && (
+      {pdfName && numPages > 0 && (
         <div className="text-sm text-gray-600">
           Page {currentPage} of {numPages}
         </div>
