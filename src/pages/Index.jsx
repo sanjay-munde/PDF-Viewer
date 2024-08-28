@@ -9,11 +9,13 @@ const Index = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [pdfName, setPdfName] = useState('');
 
   const onFileChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type === "application/pdf") {
       setPdfFile(URL.createObjectURL(file));
+      setPdfName(file.name);
     } else {
       alert("Please select a valid PDF file.");
     }
@@ -26,58 +28,59 @@ const Index = () => {
 
   return (
     <div className="min-h-screen p-8 bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6 text-center">PDF Uploader and Viewer</h1>
-      <div className="mb-6">
-        <input
-          type="file"
-          onChange={onFileChange}
-          accept="application/pdf"
-          className="block w-full text-sm text-gray-500
-            file:mr-4 file:py-2 file:px-4
-            file:rounded-full file:border-0
-            file:text-sm file:font-semibold
-            file:bg-blue-50 file:text-blue-700
-            hover:file:bg-blue-100"
-        />
-      </div>
+      <input
+        type="file"
+        onChange={onFileChange}
+        accept="application/pdf"
+        className="hidden"
+        id="pdf-upload"
+      />
+      <label
+        htmlFor="pdf-upload"
+        className="block w-full text-center text-2xl font-bold mb-4 cursor-pointer text-blue-600 hover:text-blue-800"
+      >
+        {pdfName || 'Click here to upload a PDF'}
+      </label>
       {pdfFile && (
-        <div className="flex border rounded-lg overflow-hidden bg-white shadow-lg">
-          <div className="w-1/5 border-r overflow-y-auto h-[calc(100vh-200px)]">
-            <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
-              {Array.from(new Array(numPages), (el, index) => (
-                <div
-                  key={`thumb_${index + 1}`}
-                  className={`cursor-pointer p-2 ${currentPage === index + 1 ? 'bg-blue-100' : ''}`}
-                  onClick={() => setCurrentPage(index + 1)}
-                >
-                  <div className="border border-gray-300 rounded overflow-hidden">
-                    <Page
-                      pageNumber={index + 1}
-                      width={100}
-                      renderTextLayer={false}
-                      renderAnnotationLayer={false}
-                    />
+        <>
+          <h2 className="text-4xl font-bold mb-2 text-center">{pdfName}</h2>
+          <p className="text-xl text-center mb-6">Page {currentPage} of {numPages}</p>
+          <div className="flex border rounded-lg overflow-hidden bg-white shadow-lg">
+            <div className="w-1/6 border-r overflow-y-auto h-[calc(100vh-250px)]">
+              <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
+                {Array.from(new Array(numPages), (el, index) => (
+                  <div
+                    key={`thumb_${index + 1}`}
+                    className={`cursor-pointer p-2 ${currentPage === index + 1 ? 'bg-blue-100' : ''}`}
+                    onClick={() => setCurrentPage(index + 1)}
+                  >
+                    <div className="border border-gray-300 rounded overflow-hidden">
+                      <Page
+                        pageNumber={index + 1}
+                        width={60}
+                        renderTextLayer={false}
+                        renderAnnotationLayer={false}
+                      />
+                    </div>
+                    <p className="text-center text-xs mt-1">Page {index + 1}</p>
                   </div>
-                </div>
-              ))}
-            </Document>
+                ))}
+              </Document>
+            </div>
+            <div className="w-5/6 overflow-y-auto h-[calc(100vh-250px)]">
+              <Document
+                file={pdfFile}
+                onLoadSuccess={onDocumentLoadSuccess}
+                className="flex flex-col items-center"
+              >
+                <Page
+                  pageNumber={currentPage}
+                  width={Math.min(800, window.innerWidth * 0.7)}
+                />
+              </Document>
+            </div>
           </div>
-          <div className="w-4/5 overflow-y-auto h-[calc(100vh-200px)]">
-            <Document
-              file={pdfFile}
-              onLoadSuccess={onDocumentLoadSuccess}
-              className="flex flex-col items-center"
-            >
-              <Page
-                pageNumber={currentPage}
-                width={Math.min(800, window.innerWidth * 0.7)}
-              />
-            </Document>
-            <p className="text-center mt-4">
-              Page {currentPage} of {numPages}
-            </p>
-          </div>
-        </div>
+        </>
       )}
     </div>
   );
