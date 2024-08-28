@@ -3,6 +3,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import PDFSidebar from '../components/PDFSidebar';
+import Navbar from '../components/Navbar';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -65,32 +66,16 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {pdfFile && (
-        <PDFSidebar file={pdfFile} numPages={numPages} onPageClick={scrollToPage} />
-      )}
-      <div className="flex-1 p-8 overflow-hidden relative">
-        <input
-          type="file"
-          onChange={onFileChange}
-          accept="application/pdf"
-          className="hidden"
-          id="pdf-upload"
-        />
-        <label
-          htmlFor="pdf-upload"
-          className="block w-full text-center text-5xl font-bold mb-4 cursor-pointer text-blue-600 hover:text-blue-800"
-        >
-          {pdfName || 'Click here to upload a PDF'}
-        </label>
+    <div className="flex flex-col h-screen bg-gray-100">
+      <Navbar pdfName={pdfName} currentPage={currentPage} numPages={numPages} onFileChange={onFileChange} />
+      <div className="flex flex-1 overflow-hidden">
         {pdfFile && (
-          <>
-            <div className="absolute top-2 left-2 bg-white p-2 rounded shadow text-sm">
-              <p>{pdfName}</p>
-              <p>Page {currentPage} of {numPages}</p>
-            </div>
-            <div className="border rounded-lg overflow-hidden bg-white shadow-lg mt-12">
-              <div ref={mainContentRef} className="overflow-y-auto h-[calc(100vh-250px)]">
+          <PDFSidebar file={pdfFile} numPages={numPages} onPageClick={scrollToPage} />
+        )}
+        <div className="flex-1 p-4 overflow-hidden relative">
+          {pdfFile && (
+            <div className="border rounded-lg overflow-hidden bg-white shadow-lg h-full">
+              <div ref={mainContentRef} className="overflow-y-auto h-full">
                 <Document
                   file={pdfFile}
                   onLoadSuccess={onDocumentLoadSuccess}
@@ -109,8 +94,8 @@ const Index = () => {
                 </Document>
               </div>
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
