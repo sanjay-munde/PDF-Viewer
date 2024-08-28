@@ -99,8 +99,6 @@ const Index = () => {
         setPdfFile(mergedPdfUrl);
         setNumPages(existingPdfDoc.getPageCount());
         setPageOrder(Array.from({ length: existingPdfDoc.getPageCount() }, (_, i) => i + 1));
-        
-        alert('PDF merged successfully!');
       } catch (error) {
         console.error('Error merging PDF:', error);
         alert('An error occurred while merging the PDF. Please try again.');
