@@ -42,7 +42,7 @@ const Index = () => {
       </div>
       {pdfFile && (
         <div className="flex border rounded-lg overflow-hidden bg-white shadow-lg">
-          <div className="w-1/4 border-r overflow-y-auto h-[calc(100vh-200px)]">
+          <div className="w-1/5 border-r overflow-y-auto h-[calc(100vh-200px)]">
             <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
               {Array.from(new Array(numPages), (el, index) => (
                 <div
@@ -50,17 +50,19 @@ const Index = () => {
                   className={`cursor-pointer p-2 ${currentPage === index + 1 ? 'bg-blue-100' : ''}`}
                   onClick={() => setCurrentPage(index + 1)}
                 >
-                  <Page
-                    pageNumber={index + 1}
-                    width={150}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                  />
+                  <div className="border border-gray-300 rounded overflow-hidden">
+                    <Page
+                      pageNumber={index + 1}
+                      width={100}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                    />
+                  </div>
                 </div>
               ))}
             </Document>
           </div>
-          <div className="w-3/4 overflow-y-auto h-[calc(100vh-200px)]">
+          <div className="w-4/5 overflow-y-auto h-[calc(100vh-200px)]">
             <Document
               file={pdfFile}
               onLoadSuccess={onDocumentLoadSuccess}
@@ -68,7 +70,7 @@ const Index = () => {
             >
               <Page
                 pageNumber={currentPage}
-                width={Math.min(800, window.innerWidth * 0.6)}
+                width={Math.min(800, window.innerWidth * 0.7)}
               />
             </Document>
             <p className="text-center mt-4">
