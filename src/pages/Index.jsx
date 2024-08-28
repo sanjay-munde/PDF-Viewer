@@ -177,8 +177,7 @@ const Index = () => {
           const elementTop = element.offsetTop;
           const elementBottom = elementTop + element.clientHeight;
           if (scrollTop >= elementTop - clientHeight / 2 && scrollTop < elementBottom - clientHeight / 2) {
-            const visiblePageNumber = pageOrder[i];
-            setCurrentPage(visiblePageNumber);
+            setCurrentPage(i + 1); // Set to the index + 1 to represent the current visible page number
             break;
           }
         }
@@ -197,19 +196,25 @@ const Index = () => {
     };
   }, [pageOrder]);
 
-  // Update currentPage when pageOrder changes
+  // Update currentPage when pageOrder changes or component mounts
   useEffect(() => {
-    if (mainContentRef.current) {
-      const { scrollTop } = mainContentRef.current;
-      const pageElements = document.querySelectorAll('[id^="page_"]');
-      for (let i = 0; i < pageElements.length; i++) {
-        const element = pageElements[i];
-        if (scrollTop < element.offsetTop + element.clientHeight) {
-          setCurrentPage(pageOrder[i]);
-          break;
+    const updateCurrentPage = () => {
+      if (mainContentRef.current) {
+        const { scrollTop, clientHeight } = mainContentRef.current;
+        const pageElements = document.querySelectorAll('[id^="page_"]');
+        for (let i = 0; i < pageElements.length; i++) {
+          const element = pageElements[i];
+          const elementTop = element.offsetTop;
+          const elementBottom = elementTop + element.clientHeight;
+          if (scrollTop >= elementTop - clientHeight / 2 && scrollTop < elementBottom - clientHeight / 2) {
+            setCurrentPage(i + 1); // Set to the index + 1 to represent the current visible page number
+            break;
+          }
         }
       }
-    }
+    };
+
+    updateCurrentPage();
   }, [pageOrder]);
 
   return (
