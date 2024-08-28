@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs, onMerge, showUploadButton, onTitleChange, children }) => {
+const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs, onMerge, showUploadButton, onTitleChange }) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(pdfName);
 
@@ -116,7 +116,6 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
                   <DropdownMenuItem onClick={onSaveAs}>Save As</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              {children}
             </>
           )}
         </div>

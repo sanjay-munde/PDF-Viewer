@@ -5,28 +5,12 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 import PDFSidebar from '../components/PDFSidebar';
 import Navbar from '../components/Navbar';
 import { PDFDocument } from 'pdf-lib';
-import { FileIcon, Edit3 } from 'lucide-react';
+import { FileIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Toggle } from "@/components/ui/toggle";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
-const Annotation = ({ annotation }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: `${annotation.x}%`,
-      top: `${annotation.y}%`,
-      width: '10px',
-      height: '10px',
-      borderRadius: '50%',
-      backgroundColor: 'red',
-      cursor: 'pointer',
-    }}
-  />
-);
 
 const DragDropArea = ({ onFileChange }) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -94,26 +78,7 @@ const Index = () => {
   const [pageOrder, setPageOrder] = useState([]);
   const [isSaveAsModalOpen, setIsSaveAsModalOpen] = useState(false);
   const [saveAsFileName, setSaveAsFileName] = useState('');
-  const [annotations, setAnnotations] = useState({});
-  const [isAnnotationMode, setIsAnnotationMode] = useState(false);
   const mainContentRef = useRef(null);
-
-  const handleAnnotation = (pageNumber, event) => {
-    if (!isAnnotationMode) return;
-    
-    const { offsetX, offsetY, target } = event;
-    const x = (offsetX / target.offsetWidth) * 100;
-    const y = (offsetY / target.offsetHeight) * 100;
-    
-    setAnnotations(prevAnnotations => ({
-      ...prevAnnotations,
-      [pageNumber]: [...(prevAnnotations[pageNumber] || []), { x, y }]
-    }));
-  };
-
-  const toggleAnnotationMode = () => {
-    setIsAnnotationMode(!isAnnotationMode);
-  };
 
   const onFileChange = (event) => {
     const file = event.target.files[0];
@@ -292,18 +257,7 @@ const Index = () => {
           onMerge={onMerge}
           showUploadButton={!!pdfFile}
           onTitleChange={handleTitleChange}
-        >
-          {pdfFile && (
-            <Toggle
-              pressed={isAnnotationMode}
-              onPressedChange={toggleAnnotationMode}
-              aria-label="Toggle annotation mode"
-            >
-              <Edit3 className="h-4 w-4 mr-2" />
-              Annotate
-            </Toggle>
-          )}
-        </Navbar>
+        />
         <div className="flex flex-1 overflow-hidden">
           {pdfFile && (
             <PDFSidebar
@@ -323,17 +277,13 @@ const Index = () => {
                     className="flex flex-col items-center"
                   >
                     {pageOrder.map((pageNumber, index) => (
-                      <div id={`page_${pageNumber}`} key={`page_${pageNumber}`} className="mb-8 relative">
+                      <div id={`page_${pageNumber}`} key={`page_${pageNumber}`} className="mb-8">
                         <Page
                           pageNumber={pageNumber}
                           width={Math.min(800, window.innerWidth * 0.6)}
                           renderTextLayer={true}
                           renderAnnotationLayer={true}
-                          onClick={(event) => handleAnnotation(pageNumber, event)}
                         />
-                        {annotations[pageNumber]?.map((annotation, index) => (
-                          <Annotation key={index} annotation={annotation} />
-                        ))}
                       </div>
                     ))}
                   </Document>
