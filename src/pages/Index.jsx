@@ -46,7 +46,9 @@ const Index = () => {
         const pageElements = document.querySelectorAll('[id^="page_"]');
         for (let i = 0; i < pageElements.length; i++) {
           const element = pageElements[i];
-          if (element.offsetTop >= scrollTop && element.offsetTop < scrollTop + clientHeight) {
+          const elementTop = element.offsetTop;
+          const elementBottom = elementTop + element.clientHeight;
+          if (scrollTop >= elementTop - clientHeight / 2 && scrollTop < elementBottom - clientHeight / 2) {
             setCurrentPage(i + 1);
             break;
           }
