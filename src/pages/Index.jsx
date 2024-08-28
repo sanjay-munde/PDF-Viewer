@@ -12,6 +12,21 @@ import { Button } from "@/components/ui/button";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
+const Annotation = ({ annotation }) => (
+  <div
+    style={{
+      position: 'absolute',
+      left: `${annotation.x}%`,
+      top: `${annotation.y}%`,
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      backgroundColor: 'red',
+      cursor: 'pointer',
+    }}
+  />
+);
+
 const DragDropArea = ({ onFileChange }) => {
   const [isDragging, setIsDragging] = useState(false);
 
@@ -78,7 +93,19 @@ const Index = () => {
   const [pageOrder, setPageOrder] = useState([]);
   const [isSaveAsModalOpen, setIsSaveAsModalOpen] = useState(false);
   const [saveAsFileName, setSaveAsFileName] = useState('');
+  const [annotations, setAnnotations] = useState({});
   const mainContentRef = useRef(null);
+
+  const handleAnnotation = (pageNumber, event) => {
+    const { offsetX, offsetY, target } = event;
+    const x = (offsetX / target.offsetWidth) * 100;
+    const y = (offsetY / target.offsetHeight) * 100;
+    
+    setAnnotations(prevAnnotations => ({
+      ...prevAnnotations,
+      [pageNumber]: [...(prevAnnotations[pageNumber] || []), { x, y }]
+    }));
+  };
 
   const onFileChange = (event) => {
     const file = event.target.files[0];
@@ -277,13 +304,17 @@ const Index = () => {
                     className="flex flex-col items-center"
                   >
                     {pageOrder.map((pageNumber, index) => (
-                      <div id={`page_${pageNumber}`} key={`page_${pageNumber}`} className="mb-8">
+                      <div id={`page_${pageNumber}`} key={`page_${pageNumber}`} className="mb-8 relative">
                         <Page
                           pageNumber={pageNumber}
                           width={Math.min(800, window.innerWidth * 0.6)}
                           renderTextLayer={true}
                           renderAnnotationLayer={true}
+                          onClick={(event) => handleAnnotation(pageNumber, event)}
                         />
+                        {annotations[pageNumber]?.map((annotation, index) => (
+                          <Annotation key={index} annotation={annotation} />
+                        ))}
                       </div>
                     ))}
                   </Document>
