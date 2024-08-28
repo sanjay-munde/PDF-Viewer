@@ -7,7 +7,7 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onMerge,
     <nav className="bg-white shadow-md p-4">
       <div className="flex justify-between items-start">
         <div className="flex flex-col">
-          <div className="flex items-center space-x-4 mb-2">
+          <div className="flex items-center space-x-4">
             {showUploadButton && (
               <>
                 <input
@@ -24,17 +24,19 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onMerge,
                 </label>
               </>
             )}
-            {pdfName && (
-              <span className="text-sm font-medium text-gray-700">
-                {pdfName}
-              </span>
-            )}
-          </div>
-          {pdfName && numPages > 0 && (
-            <div className="text-sm text-gray-600">
-              Page {currentPage} of {numPages}
+            <div className="flex flex-col">
+              {pdfName && (
+                <span className="text-sm font-medium text-gray-700">
+                  {pdfName}
+                </span>
+              )}
+              {pdfName && numPages > 0 && (
+                <div className="text-xs text-gray-600">
+                  Page {currentPage} of {numPages}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
         <div className="flex items-center space-x-4">
           {pdfName && numPages > 0 && (
