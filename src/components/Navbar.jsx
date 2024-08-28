@@ -105,13 +105,13 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
                 id="pdf-merge"
               />
               <label htmlFor="pdf-merge">
-                <Button variant="outline" asChild>
+                <Button variant="secondary" className="bg-white/20 text-white hover:bg-white/30" asChild>
                   <span><Merge className="mr-2 h-4 w-4" />Merge PDF</span>
                 </Button>
               </label>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
+                  <Button variant="secondary" className="bg-white/20 text-white hover:bg-white/30">
                     <Download className="mr-2 h-4 w-4" />
                     Save PDF
                   </Button>
