@@ -1,22 +1,42 @@
 import React from 'react';
 import { Document, Page } from 'react-pdf';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-const PDFSidebar = ({ file, numPages, onPageClick }) => {
+const PDFSidebar = ({ file, pages, onPageClick, onDragEnd }) => {
   return (
     <div className="w-64 h-screen overflow-y-auto bg-gray-100 p-4 border-r">
-      <Document file={file}>
-        {Array.from(new Array(numPages), (el, index) => (
-          <div key={`thumb_${index + 1}`} className="mb-4 cursor-pointer" onClick={() => onPageClick(index + 1)}>
-            <Page
-              pageNumber={index + 1}
-              width={200}
-              renderTextLayer={false}
-              renderAnnotationLayer={false}
-            />
-            <p className="text-center text-sm mt-1">Page {index + 1}</p>
-          </div>
-        ))}
-      </Document>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="pdf-pages">
+          {(provided) => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              <Document file={file}>
+                {pages.map((page, index) => (
+                  <Draggable key={`thumb_${page}`} draggableId={`thumb_${page}`} index={index}>
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className="mb-4 cursor-pointer"
+                        onClick={() => onPageClick(page)}
+                      >
+                        <Page
+                          pageNumber={page}
+                          width={200}
+                          renderTextLayer={false}
+                          renderAnnotationLayer={false}
+                        />
+                        <p className="text-center text-sm mt-1">Page {page}</p>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </Document>
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 };

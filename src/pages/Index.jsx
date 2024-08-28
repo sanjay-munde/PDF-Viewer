@@ -12,6 +12,7 @@ const Index = () => {
   const [numPages, setNumPages] = useState(null);
   const [pdfName, setPdfName] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageOrder, setPageOrder] = useState([]);
   const mainContentRef = useRef(null);
 
   const onFileChange = (event) => {
@@ -19,7 +20,7 @@ const Index = () => {
     if (file && file.type === "application/pdf") {
       setPdfFile(URL.createObjectURL(file));
       setPdfName(file.name);
-      setCurrentPage(1); // Reset to first page when new file is uploaded
+      setCurrentPage(1);
     } else {
       alert("Please select a valid PDF file.");
     }
@@ -27,6 +28,7 @@ const Index = () => {
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
+    setPageOrder(Array.from({ length: numPages }, (_, i) => i + 1));
   };
 
   const scrollToPage = (pageNumber) => {
@@ -39,6 +41,16 @@ const Index = () => {
     }
   };
 
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const newPageOrder = Array.from(pageOrder);
+    const [reorderedItem] = newPageOrder.splice(result.source.index, 1);
+    newPageOrder.splice(result.destination.index, 0, reorderedItem);
+
+    setPageOrder(newPageOrder);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (mainContentRef.current) {
@@ -49,7 +61,7 @@ const Index = () => {
           const elementTop = element.offsetTop;
           const elementBottom = elementTop + element.clientHeight;
           if (scrollTop >= elementTop - clientHeight / 2 && scrollTop < elementBottom - clientHeight / 2) {
-            setCurrentPage(i + 1);
+            setCurrentPage(pageOrder[i]);
             break;
           }
         }
@@ -66,14 +78,19 @@ const Index = () => {
         contentElement.removeEventListener('scroll', handleScroll);
       }
     };
-  }, []);
+  }, [pageOrder]);
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <Navbar pdfName={pdfName} currentPage={currentPage} numPages={numPages} onFileChange={onFileChange} />
       <div className="flex flex-1 overflow-hidden">
         {pdfFile && (
-          <PDFSidebar file={pdfFile} numPages={numPages} onPageClick={scrollToPage} />
+          <PDFSidebar
+            file={pdfFile}
+            pages={pageOrder}
+            onPageClick={scrollToPage}
+            onDragEnd={onDragEnd}
+          />
         )}
         <div className="flex-1 p-4 overflow-hidden relative">
           {pdfFile && (
@@ -84,10 +101,10 @@ const Index = () => {
                   onLoadSuccess={onDocumentLoadSuccess}
                   className="flex flex-col items-center"
                 >
-                  {Array.from(new Array(numPages), (el, index) => (
-                    <div id={`page_${index + 1}`} key={`page_${index + 1}`} className="mb-8">
+                  {pageOrder.map((pageNumber, index) => (
+                    <div id={`page_${pageNumber}`} key={`page_${pageNumber}`} className="mb-8">
                       <Page
-                        pageNumber={index + 1}
+                        pageNumber={pageNumber}
                         width={Math.min(800, window.innerWidth * 0.6)}
                         renderTextLayer={true}
                         renderAnnotationLayer={true}
