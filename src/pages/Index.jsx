@@ -130,12 +130,21 @@ const Index = () => {
 
       const newPageOrder = pageOrder.filter((_, i) => i !== index);
       setPageOrder(newPageOrder);
-      setNumPages(pdfDoc.getPageCount());
+      const newPageCount = pdfDoc.getPageCount();
+      setNumPages(newPageCount);
 
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const newPdfUrl = URL.createObjectURL(blob);
-      setPdfFile(newPdfUrl);
+      if (newPageCount === 0) {
+        // Reset state if all pages are deleted
+        setPdfFile(null);
+        setPdfName('');
+        setCurrentPage(1);
+        setPageOrder([]);
+      } else {
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const newPdfUrl = URL.createObjectURL(blob);
+        setPdfFile(newPdfUrl);
+      }
     } catch (error) {
       console.error('Error deleting page:', error);
       alert('An error occurred while deleting the page. Please try again.');
