@@ -39,7 +39,7 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
   };
 
   return (
-    <nav className="bg-gradient-to-r from-indigo-900 via-purple-800 to-pink-800 shadow-lg p-4">
+    <nav className="bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg p-4">
       <div className="flex justify-between items-center text-white">
         <div className="flex items-center space-x-4">
           {showSidebarToggle && (
@@ -91,7 +91,7 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
             id="pdf-upload"
           />
           <label htmlFor="pdf-upload">
-            <Button variant="secondary" className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors" asChild>
+            <Button variant="secondary" className="bg-white/20 text-white hover:bg-white/30" asChild>
               <span><FileUp className="mr-2 h-4 w-4" />{pdfName ? 'Change PDF' : 'Upload PDF'}</span>
             </Button>
           </label>
@@ -105,13 +105,13 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
                 id="pdf-merge"
               />
               <label htmlFor="pdf-merge">
-                <Button variant="secondary" className="bg-purple-600 text-white hover:bg-purple-700 transition-colors" asChild>
+                <Button variant="secondary" className="bg-white/20 text-white hover:bg-white/30" asChild>
                   <span><Merge className="mr-2 h-4 w-4" />Merge PDF</span>
                 </Button>
               </label>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" className="bg-pink-600 text-white hover:bg-pink-700 transition-colors">
+                  <Button variant="secondary" className="bg-white/20 text-white hover:bg-white/30">
                     <Download className="mr-2 h-4 w-4" />
                     Save PDF
                   </Button>
