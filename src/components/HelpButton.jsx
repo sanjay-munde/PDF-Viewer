@@ -27,7 +27,7 @@ const HelpButton = () => {
         <Button
           variant="outline"
           size="icon"
-          className="fixed bottom-4 right-4 rounded-full z-50 bg-gray-600 text-white border-none hover:bg-gray-500 transition-colors"
+          className="fixed bottom-4 right-4 rounded-full z-50 bg-pink-600 text-white border-none hover:bg-pink-700 transition-colors"
         >
           <HelpCircle className="h-4 w-4" />
         </Button>
