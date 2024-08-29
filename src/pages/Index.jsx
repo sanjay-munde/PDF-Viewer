@@ -360,9 +360,6 @@ const Index = () => {
 };
 
 export default Index;
-    </div>
-  );
-};
 
 const Index = () => {
   const [pdfFile, setPdfFile] = useState(null);
