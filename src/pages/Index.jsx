@@ -359,8 +359,6 @@ const Index = () => {
   );
 };
 
-export default Index;
-
 const Index = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
