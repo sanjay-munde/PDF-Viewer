@@ -47,7 +47,7 @@ const DragDropArea = ({ onFileChange }) => {
   return (
     <div
       className={`flex flex-col items-center justify-center h-full border-4 border-dashed rounded-lg p-8 transition-colors ${
-        isDragging ? 'border-purple-500 bg-purple-50' : 'border-purple-300'
+        isDragging ? 'border-gray-600 bg-gray-100' : 'border-gray-400'
       }`}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
@@ -55,9 +55,9 @@ const DragDropArea = ({ onFileChange }) => {
       onDrop={handleDrop}
     >
       <FileIcon className="w-16 h-16 text-purple-400 mb-4" />
-      <p className="text-xl font-semibold text-purple-700 mb-2">Drag & Drop your PDF here</p>
-      <p className="text-sm text-purple-500 mb-4">or</p>
-      <label htmlFor="pdf-upload" className="cursor-pointer bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded hover:from-purple-600 hover:to-pink-600 transition-colors">
+      <p className="text-xl font-semibold text-gray-700 mb-2">Drag & Drop your PDF here</p>
+      <p className="text-sm text-gray-500 mb-4">or</p>
+      <label htmlFor="pdf-upload" className="cursor-pointer bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-500 transition-colors">
         Choose PDF
       </label>
       <input
@@ -281,7 +281,7 @@ const Index = () => {
 
   return (
     <>
-      <div className="flex flex-col h-screen bg-gradient-to-br from-purple-100 to-pink-100">
+      <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <Navbar 
           pdfName={pdfName} 
           currentPage={currentPage} 

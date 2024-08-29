@@ -39,7 +39,7 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
   };
 
   return (
-    <nav className="bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg p-4">
+    <nav className="bg-gradient-to-r from-gray-700 to-gray-800 shadow-lg p-4">
       <div className="flex justify-between items-center text-white">
         <div className="flex items-center space-x-4">
           {showSidebarToggle && (
@@ -91,7 +91,7 @@ const Navbar = ({ pdfName, currentPage, numPages, onFileChange, onSave, onSaveAs
             id="pdf-upload"
           />
           <label htmlFor="pdf-upload">
-            <Button variant="secondary" className="bg-white/20 text-white hover:bg-white/30" asChild>
+            <Button variant="secondary" className="bg-gray-600 text-white hover:bg-gray-500 transition-colors" asChild>
               <span><FileUp className="mr-2 h-4 w-4" />{pdfName ? 'Change PDF' : 'Upload PDF'}</span>
             </Button>
           </label>

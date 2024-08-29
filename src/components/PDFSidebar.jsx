@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 const PDFSidebar = ({ file, pages, onPageClick, onDragEnd, onDeletePage }) => {
   return (
-    <div className="w-64 h-screen overflow-y-auto bg-gradient-to-b from-purple-500 to-pink-500 p-4 border-r border-white/20">
+    <div className="w-64 h-screen overflow-y-auto bg-gradient-to-b from-gray-200 to-gray-300 p-4 border-r border-gray-400">
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="pdf-pages">
           {(provided) => (
