@@ -1,75 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import PDFSidebar from '../components/PDFSidebar';
 import Navbar from '../components/Navbar';
 import { PDFDocument } from 'pdf-lib';
-import { FileIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import HelpButton from '../components/HelpButton';
+import DragDropArea from '../components/DragDropArea';
+import PDFViewer from '../components/PDFViewer';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
-const DragDropArea = ({ onFileChange }) => {
-  const [isDragging, setIsDragging] = useState(false);
-
-  const handleDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      onFileChange({ target: { files: [files[0]] } });
-    }
-  };
-
-  return (
-    <div
-      className={`flex flex-col items-center justify-center h-full border-4 border-dashed rounded-lg p-8 transition-colors ${
-        isDragging ? 'border-purple-500 bg-purple-50' : 'border-purple-300'
-      }`}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-    >
-      <FileIcon className="w-16 h-16 text-purple-400 mb-4" />
-      <p className="text-xl font-semibold text-purple-700 mb-2">Drag & Drop your PDF here</p>
-      <p className="text-sm text-purple-500 mb-4">or</p>
-      <label htmlFor="pdf-upload" className="cursor-pointer bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded hover:from-purple-600 hover:to-pink-600 transition-colors">
-        Choose PDF
-      </label>
-      <input
-        id="pdf-upload"
-        type="file"
-        onChange={onFileChange}
-        accept="application/pdf"
-        className="hidden"
-      />
-    </div>
-  );
-};
 
 const Index = () => {
   const [pdfFile, setPdfFile] = useState(null);
@@ -297,34 +240,25 @@ const Index = () => {
         />
         <div className="flex flex-1 overflow-hidden">
           {pdfFile && isSidebarVisible && (
-            <PDFSidebar
-              file={pdfFile}
-              pages={pageOrder}
-              onPageClick={scrollToPage}
-              onDragEnd={onDragEnd}
-              onDeletePage={onDeletePage}
-            />
+            <div className="hidden sm:block">
+              <PDFSidebar
+                file={pdfFile}
+                pages={pageOrder}
+                onPageClick={scrollToPage}
+                onDragEnd={onDragEnd}
+                onDeletePage={onDeletePage}
+              />
+            </div>
           )}
-          <div className="flex-1 p-4 overflow-hidden relative">
+          <div className="flex-1 p-2 sm:p-4 overflow-hidden relative">
             {pdfFile ? (
               <div className="border border-purple-200 rounded-lg overflow-hidden bg-white shadow-lg h-full">
                 <div ref={mainContentRef} className="overflow-y-auto h-full">
-                  <Document
-                    file={pdfFile}
-                    onLoadSuccess={onDocumentLoadSuccess}
-                    className="flex flex-col items-center"
-                  >
-                    {pageOrder.map((pageNumber, index) => (
-                      <div id={`page_${pageNumber}`} key={`page_${pageNumber}`} className="mb-8">
-                        <Page
-                          pageNumber={pageNumber}
-                          width={Math.min(800, window.innerWidth * 0.6)}
-                          renderTextLayer={true}
-                          renderAnnotationLayer={true}
-                        />
-                      </div>
-                    ))}
-                  </Document>
+                  <PDFViewer 
+                    pdfFile={pdfFile}
+                    pageOrder={pageOrder}
+                    onDocumentLoadSuccess={onDocumentLoadSuccess}
+                  />
                 </div>
               </div>
             ) : (
@@ -334,7 +268,7 @@ const Index = () => {
         </div>
       </div>
       <Dialog open={isSaveAsModalOpen} onOpenChange={setIsSaveAsModalOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Save As</DialogTitle>
           </DialogHeader>
@@ -342,14 +276,15 @@ const Index = () => {
             value={saveAsFileName}
             onChange={(e) => setSaveAsFileName(e.target.value)}
             placeholder="Enter file name"
+            className="mt-4"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && saveAsFileName.trim()) {
                 handleSaveAs();
               }
             }}
           />
-          <DialogFooter>
-            <Button onClick={() => setIsSaveAsModalOpen(false)}>Cancel</Button>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setIsSaveAsModalOpen(false)}>Cancel</Button>
             <Button onClick={handleSaveAs}>Save</Button>
           </DialogFooter>
         </DialogContent>
